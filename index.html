@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html manifest="app.manifest">
+<head>
+	<meta charset="utf-8">
+	<title>Thorn Gram</title>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+	<style type="text/css">
+		body {font-family:sans;}
+		ul.list {margin:0; padding:0;}
+		ul.list li {list-style: none; border-bottom: 1px dashed #eee;}
+		.main {padding:20px;border-color:#fff;border-radius:3px;}
+		.input, .add, .remove, .todo, .check , .delete {font-size: 20px; padding: 10px 20px; cursor: pointer;}
+		.input {border-radius: 3px;border: 1px solid #50d07d;}
+		.add {border-radius: 3px;background-color:#50d07d;color:#fff;border: 1px solid #50d07d;}
+		.check {outline:none; appearance: none; -webkit-appearance: none; color:#666;}
+		.check:after {content:'✔'; }
+		.done .todo {color: #666; text-decoration: line-through;}
+		.done .check {color:#53a93f;}
+		.remove {text-decoration: none; color:#d14836;}
+		.delete {background-color: #d02552;border: 1px solid transparent;color: #fff;border-radius:3px;font-weight:100;}
+		.info {position:fixed;top:0;right:0;background-color: #383127;color:#ccc;padding:4px;border-radius:3px;}
+	</style>
+	<script type='text/javascript' src="alight.last.min.js"></script>
+	<script type='text/javascript' src="dygraph-combined.js"></script>
+</head>
+<body al-app="thornApp">
+	<form al-submit="add()">
+		<input type="number" step="any" min="0" autofocus class="input"  al-value="gram" /> 
+		<input type="date" class="input" value="" al-value="date" />
+		<button class="add">➕ Add</button>
+	</form>
+	<div id="graphdiv"></div>
+	<ul class="list">
+		<li al-repeat="elem in thornTable">
+			{{elem[0] + ":" + elem[1]}}
+		</li>
+	</ul>
+	<script type='text/javascript'>//<![CDATA[ 
+		function thornApp(scope) {
+			function load(key) { return JSON.parse(localStorage.getItem(key)); }
+			function save(list) { localStorage.setItem('thornTable', JSON.stringify(list)); }
+			function destroy(key) { localStorage.removeItem(key); }
+			scope.add = function () {
+				dd = new Date(scope.date);
+				now = dd.getFullYear() * 10000 + (1 + dd.getMonth()) * 100 + dd.getDate();
+				elem = [now, scope.gram];
+				scope.thornTable.push(elem);
+				save(scope.thornTable);
+				scope.gram = "";
+				scope.g.updateOptions({'file': scope.thornTable});
+			}
+
+			// INIT
+			scope.thornTable = load('thornTable') || [];
+			scope.date = new Date();
+
+			scope.g = new Dygraph(
+
+			   // containing div
+			   document.getElementById("graphdiv"),
+
+			   scope.thornTable
+
+			 );
+		}
+	</script>
+</body>
+</html>
