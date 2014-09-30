@@ -22,6 +22,7 @@
 		.remove {text-decoration: none; color:#d14836;}
 		.delete {background-color: #d02552;border: 1px solid transparent;color: #fff;border-radius:3px;font-weight:100;}
 		.info {position:fixed;top:0;right:0;background-color: #383127;color:#ccc;padding:4px;border-radius:3px;}
+		#graphdiv {height: 400px; width: 100%;}
 	</style>
 	<script type='text/javascript' src="alight.last.min.js"></script>
 	<script type='text/javascript' src="dygraph-combined.js"></script>
@@ -29,42 +30,62 @@
 <body al-app="thornApp">
 	<form al-submit="add()">
 		<input type="number" step="any" min="0" autofocus class="input"  al-value="gram" /> 
-		<input type="date" class="input" value="" al-value="date" />
+		<input type="date" class="input" al-value="date" />
 		<button class="add">➕ Add</button>
+		<button class="delete" al-click="empty()">✖ Del</button>
 	</form>
 	<div id="graphdiv"></div>
-	<ul class="list">
-		<li al-repeat="elem in thornTable">
-			{{elem[0] + ":" + elem[1]}}
-		</li>
-	</ul>
+	<table border>
+		<tr al-repeat="elem in thornTable">
+			<td>{{elem[0]}}</td><td>{{elem[1]}}</td>
+		</tr>
+	</table>
 	<script type='text/javascript'>//<![CDATA[ 
 		function thornApp(scope) {
 			function load(key) { return JSON.parse(localStorage.getItem(key)); }
 			function save(list) { localStorage.setItem('thornTable', JSON.stringify(list)); }
 			function destroy(key) { localStorage.removeItem(key); }
+			function regenerateData(table) { 
+				table.forEach(function(elem, ind, arr) { 
+					elem[0] = new Date(elem[0]); 
+					elem[1] = parseInt(elem[1],10);
+				}) 
+			}
+			function updateTable() {
+				scope.thornTable.sort(function(a,b){ if(a[0] < b[0]) {return -1} else return 1 })
+				save(scope.thornTable);
+				scope.g.updateOptions({'file': scope.thornTable});
+			}
 			scope.add = function () {
 				dd = new Date(scope.date);
-				now = dd.getFullYear() * 10000 + (1 + dd.getMonth()) * 100 + dd.getDate();
-				elem = [now, scope.gram];
+				elem = [dd, scope.gram];
 				scope.thornTable.push(elem);
-				save(scope.thornTable);
 				scope.gram = "";
-				scope.g.updateOptions({'file': scope.thornTable});
+				updateTable();
+			}
+			scope.empty = function () {
+				destroy('thornTable');
+				scope.thornTable = [];
+				updateTable();
 			}
 
 			// INIT
 			scope.thornTable = load('thornTable') || [];
-			scope.date = new Date();
+			regenerateData(scope.thornTable);
+			
+			dd = new Date();
+			scope.date = dd.toISOString().substring(0,10);
 
-			scope.g = new Dygraph(
-
-			   // containing div
-			   document.getElementById("graphdiv"),
-
-			   scope.thornTable
-
-			 );
+			if (scope.thornTable.length > 0) {
+				scope.g = new Dygraph(
+				 	// containing div
+			   		document.getElementById("graphdiv"),
+			   		scope.thornTable,
+			   		{
+			   			labels: ['Date', 'Weight']
+			   		}
+				);
+			}
 		}
 	</script>
 </body>
