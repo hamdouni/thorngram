@@ -8,13 +8,16 @@
 	<meta name="MobileOptimized" content="320">
 	<meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 	<style type="text/css">
+		html, body {width: 100%; height: 100%; padding: 0; margin: 0;}
 		body {font-family:sans;}
 		ul.list {margin:0; padding:0;}
 		ul.list li {list-style: none; border-bottom: 1px dashed #eee;}
-		.main {padding:20px;border-color:#fff;border-radius:3px;}
-		.input, .add, .remove, .todo, .check , .delete {font-size: 20px; padding: 10px 20px; cursor: pointer;}
-		.input {border-radius: 3px;border: 1px solid #50d07d;}
-		.add {border-radius: 3px;background-color:#50d07d;color:#fff;border: 1px solid #50d07d;}
+		.footer {font-size: 1.2em; position: absolute; bottom: 0;}
+		.main {text-align: center; }
+		.input, .add, .remove, .todo, .check , .delete {font-size: 20px; cursor: pointer;}
+		.input {font-size: 3em; border-radius: 3px;border: 1px solid #50d07d; width: 80%; }
+		.date {border: 1px dashed #333; font-size: 1em; font-weight: bold; }
+		.add {font-size: 3em; border-radius: 3px;background-color:#50d07d;color:#fff;border: 1px solid #50d07d; width: 15%;}
 		.check {outline:none; appearance: none; -webkit-appearance: none; color:#666;}
 		.check:after {content:'✔'; }
 		.done .todo {color: #666; text-decoration: line-through;}
@@ -28,18 +31,26 @@
 	<script type='text/javascript' src="dygraph-combined.js"></script>
 </head>
 <body al-app="thornApp">
-	<form al-submit="add()">
-		<input type="number" step="any" min="0" autofocus class="input"  al-value="gram" /> 
-		<input type="date" class="input" al-value="date" />
-		<button class="add">➕ Add</button>
-		<button class="delete" al-click="empty()">✖ Del</button>
-	</form>
-	<div id="graphdiv"></div>
-	<table border>
-		<tr al-repeat="elem in thornTable">
-			<td>{{elem[0]}}</td><td>{{elem[1]}}</td>
-		</tr>
-	</table>
+	<div class="main">
+		<form al-submit="add()">
+			<input type="number" step="any" min="0" autofocus class="input"  al-value="gram" /> 
+			<button class="add">➕</button>
+			<input type="date" class="date" al-value="date" al-show="changeDateIsVisible" /> 
+		</form>
+		<div id="graphdiv" al-show="graphIsVisible"></div>
+		<div id="tablediv" al-show="tableIsVisible">
+			<table border>
+			<tr al-repeat="elem in thornTable">
+				<td>{{elem[0]}}</td><td>{{elem[1]}}</td>
+			</tr>
+			</table>
+			<button class="delete" al-click="empty()">✖ Del</button>
+		</div>
+	</div>
+	<div class="footer">
+		<a href="#" al-click="changeDateIsVisible=true">{{date}}</a> | <a href="#" al-click="graphIsVisible=true;tableIsVisible=false">G</a> | <a href="#" al-click="graphIsVisible=false;tableIsVisible=true">T</a> 
+	</div>
+
 	<script type='text/javascript'>//<![CDATA[ 
 		function thornApp(scope) {
 			function load(key) { return JSON.parse(localStorage.getItem(key)); }
