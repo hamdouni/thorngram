@@ -57,8 +57,8 @@
 			   		document.getElementById("graphdiv"),
 			   		[ scope.thornTable ],
 			   		{
-						xaxis: {mode: 'time'},
-						yaxis: {},
+						xaxis: {mode: 'time', autoscale: true},
+						yaxis: {autoscale: true},
 						grid: {outline: ''}
 			   		}
 				);
@@ -100,7 +100,7 @@
 				drawGraph();
 			}
 		}
-	</script>
+	//]]></script>
 </body>
 </html>
 
