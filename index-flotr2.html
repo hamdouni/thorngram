@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="main.css"/>
 </head>
 <body al-app="thornApp">
+<div class="container">
 	<form al-submit="add()">
 		<div class="main">
 			<input type="number" step="any" min="0" autofocus="autofocus" class="input"  al-value="gram" /> 
@@ -38,6 +39,7 @@
 			<button class="action add">➕</button>
 		</div>
 	</form>
+</div> <!-- container -->
 
 	<script type='text/javascript' src="alight.last.min.js"></script>
 	<script type='text/javascript' src="flotr2.min.js"></script>
@@ -57,7 +59,7 @@
 			   		document.getElementById("graphdiv"),
 			   		[ scope.thornTable ],
 			   		{
-						xaxis: {mode: 'time', autoscale: true},
+						xaxis: {mode: 'time', autoscale: true, margin: false},
 						yaxis: {autoscale: true},
 						grid: {outline: ''}
 			   		}
@@ -97,6 +99,7 @@
 			scope.date = dd.toISOString().substring(0,10);
 
 			if (scope.thornTable.length > 0) {
+				scope.graphIsVisible = true;
 				drawGraph();
 			}
 		}
