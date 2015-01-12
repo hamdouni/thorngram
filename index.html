@@ -4,16 +4,30 @@
 	<meta charset="utf-8">
 	<title>Thorn Gram</title>
 	<meta name="apple-mobile-web-app-capable" content="yes">
+  	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="HandheldFriendly" content="True">
 	<meta name="MobileOptimized" content="320">
 	<meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 	<link rel="stylesheet" href="main.css"/>
+  	<link rel="shortcut icon" href="favicon.ico">
+  	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+  	<link rel="icon" href="apple-touch-icon.png">
+  	<link rel="icon" sizes="152x152" href="apple-touch-icon-152x152.png">
 </head>
 <body al-app="thornApp">
 <div class="container">
 	<form al-submit="add()">
+		<img src="apple-touch-icon.png"/>
+		<div class="header">
+			<input class="action" type="date" class="date" al-value="date" al-show="changeDateIsVisible" al-blur="changeDateIsVisible=false" al-focused="changeDateIsVisible" /> 
+			<a class="action" href="#" al-show="!changeDateIsVisible" al-click="changeDateIsVisible=true">{{date}}</a>
+		        <a class="action" href="#" al-click="graphIsVisible=true;tableIsVisible=false">G</a>
+		        <a class="action" href="#" al-click="graphIsVisible=false;tableIsVisible=true">T</a> 
+			<a class="action" href="#" al-click="empty()" al-show="tableIsVisible"> ✖ Empty </a>
+			<button class="action add">➕ ADD</button>
+		</div>
 		<div class="main">
-			<input type="number" step="any" min="0" autofocus="autofocus" class="input"  al-value="gram" /> 
+			<input type="number" step="any" min="0" autofocus="autofocus" class="input"  al-value="gram" placeholder="insert weight here" /> 
 			<div id="graphdiv" al-show="graphIsVisible"></div>
 			<div id="tablediv" al-show="tableIsVisible">
 				<table>
@@ -30,14 +44,6 @@
 				</table>
 			</div>
 		</div>
-		<div class="footer">
-			<input class="action" type="date" class="date" al-value="date" al-show="changeDateIsVisible" al-blur="changeDateIsVisible=false" al-focused="changeDateIsVisible" /> 
-			<a class="action" href="#" al-show="!changeDateIsVisible" al-click="changeDateIsVisible=true">{{date}}</a>
-		        <a class="action" href="#" al-click="graphIsVisible=true;tableIsVisible=false">G</a>
-		        <a class="action" href="#" al-click="graphIsVisible=false;tableIsVisible=true">T</a> 
-			<a class="action" href="#" al-click="empty()" al-show="tableIsVisible"> ✖ Empty </a>
-			<button class="action add">➕</button>
-		</div>
 	</form>
 </div> <!-- container -->
 
@@ -51,7 +57,7 @@
 			function regenerateData(table) { 
 				table.forEach(function(elem, ind, arr) { 
 					elem[0] = new Date(elem[0]); 
-					elem[1] = parseInt(elem[1],10);
+					elem[1] = parseFloat(elem[1]);
 				}) 
 			}
 			function drawGraph() {
